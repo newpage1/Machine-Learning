@@ -47,5 +47,18 @@ def text2matrix(filename):
 	    index += 1
     return returnMat,labelvector
 
+def autonorm(dataSet):
+    """
+    normalization
+    """
+    minvalue = dataSet.min(0)
+    maxvalue = dataSet.max(0)
+    ranges = maxvalue - minvalue
+    norm = zeros(shape(dataSet))
+    m = dataSet.shape[0]
+    norm = dataSet - tile(minvalue,(m,1))
+    norm = norm/tile(ranges,(m,1))
+    return norm,ranges,minvalue
+
     
 
