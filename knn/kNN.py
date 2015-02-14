@@ -9,7 +9,7 @@ def createDataSet():
 def classify(inX,dataSet,labels,k):
     dataSetSize = dataSet.shape[0]
     diffMat = tile(inX,(dataSetSize,1)) - dataSet
-    sqDiffMat = difMat**2
+    sqDiffMat = diffMat**2
     sqdistance = sqDiffMat.sum(axis=1)
     distance = sqdistance**0.5
     sorteddis = distance.argsort()
@@ -17,5 +17,7 @@ def classify(inX,dataSet,labels,k):
     for i in range(k):
 	    votelable = labels[sorteddis[i]]
 	    classcount[votelable] = classcount.get(votelable,0) + 1
+    sortedclass = sorted(classcount.iteritems(),key=operator.itemgetter(1),reverse = True)
+    return sortedclass[0][0]
     
 
