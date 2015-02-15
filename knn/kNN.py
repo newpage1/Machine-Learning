@@ -1,5 +1,5 @@
 """
-MachineLearning
+K Near Neighbour
 """
 from numpy import *
 import operator
