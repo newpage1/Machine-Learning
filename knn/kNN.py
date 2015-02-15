@@ -60,5 +60,20 @@ def autonorm(dataSet):
     norm = norm/tile(ranges,(m,1))
     return norm,ranges,minvalue
 
-    
-
+def datingtest():
+    """
+    test the dating dataset ,ratio = 0.1,simply choose the previous 10 percent data for testing ,choosing randomly maybe the normal way
+    """
+    ratio = 0.10
+    datamat,label = text2matrix('datingTestSet2.txt')
+    normmat,ranges,minvalue = autonorm(datamat)
+    m = normmat.shape[0]
+    testvector = int(m*ratio)
+    errorcount = 0.0
+    for i in range(testvector):
+	    result = classify(normmat[i,:],normmat[testvector:m,:],label[testvector:m],3)
+	    print "the classifier result :%d,the real answer :%d"%(result,label[i])
+	    if result != label[i]:
+		    errorcount += 1.0
+    print "the total error rate is %f"%(errorcount/testvector)
+ 
