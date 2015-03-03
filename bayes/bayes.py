@@ -60,7 +60,7 @@ def classify(veclass,p0vec,p1vec,pa):
     else:
 	    return 0
 
-def bagofword(vocablist,inputset)
+def bagofword(vocablist,inputset):
     returnvec = [0]*len(vocablist)
     for word in inputset:
 	    if word in vocablist:
