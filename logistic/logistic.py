@@ -1,6 +1,7 @@
 from math import *
 from numpy import *
 import matplotlib.pyplot as plt
+import random
 
 def sigmoid(matrix):
     m,n = shape(matrix)
@@ -59,4 +60,19 @@ def plotfit():
     plt.ylabel('X2')
     plt.show()
    # return x,y
+
+def randomweight(datamat,labelmat,cycle=150):
+    m,n = shape(datamat)
+    weights = ones(n)
+    for i in range(cycle):
+	    index = range(m)
+	    for j in range(m):
+		    axi = 4/(1.0+i+j)+0.01
+		    randindex = int(random.uniform(0,len(index)))
+		    value = sum(datamat[randindex]*weights)
+		    h = 1.0/(1+exp(-value))
+		    error = labelmat[randindex] - h
+		    weights = weights + axi*error*array(datamat[randindex])
+		    del(index[randindex])
+    return weights
 
