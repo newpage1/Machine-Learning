@@ -55,6 +55,11 @@ def simplesmo(datamatin,labelmatin,c,toler,maxiter):
 				    print 'eta >= 0'
 				    continue
 			    alpha[j] -= labelmat[j]*(ei - ej)/eta
+			    alpha[j] = clipalf(alpha[j],H,L)
+			    if(abs(alpha[j]-oldj)<0.0001)
+				    print 'not moving enough'
+				    continue
+
 
 
 
