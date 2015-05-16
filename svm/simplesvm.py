@@ -10,13 +10,13 @@ def loaddataset(filename):
 	    labelmat.append(float(valuelist[2]))
     return datamat,labelmat
 
-def selectj(i,m):
+def selectJrand(i,m):
     j = i
     while j == i:
 	    j = int(random.uniform(0,m))
     return j
 
-def clipalf(axi,H,L):
+def clipAlpha(axi,H,L):
     if axi > H:
 	    axi = H
     if axi < L:
@@ -32,7 +32,7 @@ def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
         alphaPairsChanged = 0
         for i in range(m):
             fXi = float(multiply(alphas,labelMat).T*(dataMatrix*dataMatrix[i,:].T)) + b
-            Ei = fXi - float(labelMat[i])#if checks if an example violates KKT conditions
+            Ei = fXi - float(labelMat[i])
             if ((labelMat[i]*Ei < -toler) and (alphas[i] < C)) or ((labelMat[i]*Ei > toler) and (alphas[i] > 0)):
                 j = selectJrand(i,m)
                 fXj = float(multiply(alphas,labelMat).T*(dataMatrix*dataMatrix[j,:].T)) + b
@@ -50,8 +50,7 @@ def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
                 alphas[j] -= labelMat[j]*(Ei - Ej)/eta
                 alphas[j] = clipAlpha(alphas[j],H,L)
                 if (abs(alphas[j] - alphaJold) < 0.00001): print "j not moving enough"; continue
-                alphas[i] += labelMat[j]*labelMat[i]*(alphaJold - alphas[j])#update i by the same amount as j
-                                                                        #the update is in the oppostie direction
+                alphas[i] += labelMat[j]*labelMat[i]*(alphaJold - alphas[j])
                 b1 = b - Ei- labelMat[i]*(alphas[i]-alphaIold)*dataMatrix[i,:]*dataMatrix[i,:].T - labelMat[j]*(alphas[j]-alphaJold)*dataMatrix[i,:]*dataMatrix[j,:].T
                 b2 = b - Ej- labelMat[i]*(alphas[i]-alphaIold)*dataMatrix[i,:]*dataMatrix[j,:].T - labelMat[j]*(alphas[j]-alphaJold)*dataMatrix[j,:]*dataMatrix[j,:].T
                 if (0 < alphas[i]) and (C > alphas[i]): b = b1
