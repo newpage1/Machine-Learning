@@ -23,7 +23,7 @@ def clacEk(oS,k):
 def selectJ(i,oS,Ei):
     maxk = -1;maxe = 0;ej = 0
     oS.ecache[i] = [1,Ei]
-    cachelist = nonzero(oS.ecache[:,0].A)[0]
+    cachelist = nonzero(oS.ecache[:,0].A)[0]#return the nonzero number index tuple list of the NO.0 row of the matrix 
     if len(cachelist) > 1:
 	    for k in cachelist:
 		    if k==i : continue
@@ -40,5 +40,41 @@ def selectJ(i,oS,Ei):
 def updateEk(oS,k):
     ek = calcEk(oS,k)
     oS.ecache[k] = [1,ek]
+
+def innerL(i,os):
+    ei = calcEk(os,i)
+    if (os.labelmat[i]*ei < -os.tol and os.alpha[i]< c) or (os.labelmat[i]*ei >os.tol and os.alpha[i] > 0):
+	    j,ej = selectJ(i,os,ei)
+	    iold = os.alpha[i].copy()
+	    jold = os.alpha[j].copy()
+	    if os.labelmat[i] != os.labelmat[j]:
+		    L = max(0,os.alpha[j] - os.alpha[i])
+		    H = min(os.c,os.c + os.alpha[j] - os.alpha[i])
+	    else:
+		    L = max(0,os.alpha[i] + os.alpha[j] - os.c)
+		    H = min(os.c,os.alpha[i] + os.alpha[j])
+	    if L==H:
+		    print 'L=H';return 0
+	    eta = 2.0*os.X[i,:]*os.X[j,:].T - os.X[i,:]*os.X[i,:].T - os.X[j,:]*os.X[j,:].T
+	    if eta > 0:
+		    print 'eta>0';return 0
+	    os.alpha[j] -= os.labelmat[j]*(ei-ej)/eta
+	    os.plpha[j] = clipAlpha(os.alpha[j],H,L)
+	    updateEk(os,j)
+	    if abs(os.alpha[j] - jold) < 0.00001:
+		    print 'j not moving enogh';return 0
+	    os.alpha[i] += os.labelmat[j]*os.labelmat[i]*(jold - os.alpha[j])
+	    updateEk(os,i)
+	    b1 = os.b - ei - os.labelmat[i]*(os.alpha[i] - iold)*(os.X[i,:]*os.X[i,:].T) - os.labelmat[j]*(os.alpha[j] - jold)*(os.X[i,:]*os.X[j,:].T)
+	    b2 = os.b - ej - os.labelmat[i]*(os.alpha[i] - iold)*(os.X[i,:]*os.X[j,:].T) - os.labelmat[j]*(os.alpha[j] - jold)*(os.X[j,:]*os.X[j,:].T)
+	    if os.alpha[i] > 0 and os.alpha[i] < os.c:
+		    os.b = b1
+		    elif os.alpha[j] > 0 and os.alpha[j] < os.c:
+			    os.b = b2
+		    else:
+			    os.b = (b1+b2)/2.0
+		    return 1
+    else:
+	    return 0
 
 
