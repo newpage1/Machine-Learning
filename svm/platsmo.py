@@ -77,4 +77,27 @@ def innerL(i,os):
     else:
 	    return 0
 
+def smop(datamat,classlabel,c,tol,maxiter,ktup=('lin',0)):
+    os = optstruct(mat(datmat),mat(classlabel).tanspose(),c,tol)
+    iter = 0;entire = True;pairchange = 0
+    while iter < maxiter and pairchange >0 or entire:
+	    pairchange = 0
+	    if entire:
+		    for i in range(os.m):
+			    pairchange += innerL(i,os)
+		    print 'full set ,iter:%d,i:%d,pairchange:%d' %(iter,i,pairchange)
+		    iter += 1
+	    else:
+		    nonbound = nonzero((os.alpha.A>0)*(os.alpha.A<c))[0]
+		    for i in nonbound:
+			    pairchange += innerL(i,os)
+		    print 'nonbound ,iter:%d,i:%d,pairchange:%d' %(iter,i,pairchange)
+		    iter +=1
+	    if entire:
+		    entire = False
+	    elif pairchange == 0 :
+		    entire = True
+	    print 'iteration number:%d' %iter
+    return os.b,os.alpha
+	
 
